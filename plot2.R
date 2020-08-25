@@ -1,23 +1,23 @@
 library("dplyr")
 tb<-read.csv(file = "./household_power_consumption.txt",
-             ,stringsAsFactors = F,sep = ";")
+             ,stringsAsFactors = F,sep = ";",na.strings="?")
 head(tb)
 str(tb)
 tb<-tbl_df(tb)
-
+summary(tb)
 # Filter dataset
 
-fn1<-mutate(tb,date2 = as.Date.character(x=tb$Date,format = "%d/%m/%Y") )
-fn2<-filter(fn1,date2 >= as.Date("2007-02-01") & date2 <= as.Date("2007-02-03"))
-g<-group_by(fn2,date2)
+dt <- tb[ tb$Date %in% c("1/2/2007","2/2/2007"),]
+dt$Date <- as.Date(dt$Date,"%d/%m/%Y")
 
 #Plotting
 
-cua<-data.frame(as.numeric(g$Global_active_power),g$date2)
-plot(cua$as.numeric.g.Global_active_power.~cua$g.date2, 
+pp<-na.omit(dt)
+
+dtime <- strptime(paste(pp$Date, pp$Time, sep=" "), "%Y-%m-%d %H:%M:%S") 
+plot(dtime,pp$Global_active_power,
      type="l",
-     ylab="Global Active Power (kilowatts)", 
-     xlab="")
+     ylab="Global Active Power (kilowatts)",xlab="")
 
 # Print
 dev.copy(png, file="plot2.png", height=480, width=480)
